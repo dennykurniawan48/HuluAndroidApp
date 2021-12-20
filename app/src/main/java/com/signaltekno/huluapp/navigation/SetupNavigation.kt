@@ -40,8 +40,10 @@ fun SetupNavigation(
             )
         }
         composable(Screen.SEARCH.route){
-//            sharedViewModel.setSearchIdle()
             SearchScreen(sharedViewModel = sharedViewModel, navController = navController, setBottomBar = setBottomBar)
+        }
+        composable(Screen.FAVOURITE.route){
+            FavouriteScreen(sharedViewModel = sharedViewModel, navController = navController, setBottomBar = setBottomBar)
         }
     }
 }

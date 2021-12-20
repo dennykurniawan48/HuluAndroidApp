@@ -68,12 +68,12 @@ class MainActivity : ComponentActivity() {
                                 Icons.Filled.Home
                             ),
                             BottomNavItem(
-                                name = "Chat",
+                                name = "Search",
                                 route = Screen.SEARCH.route,
                                 Icons.Filled.Search
                             ),
                             BottomNavItem(
-                                name = "Setting",
+                                name = "Fav",
                                 route = Screen.FAVOURITE.route,
                                 Icons.Filled.Favorite
                             )

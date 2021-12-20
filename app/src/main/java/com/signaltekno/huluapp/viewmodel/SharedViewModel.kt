@@ -23,6 +23,7 @@ class SharedViewModel @Inject constructor(private val datastoreRepository: Datas
     val detail = mutableStateOf<DetailMovie?>(null)
     val dataSearch = MutableLiveData<NetworkResult<ResponseMovie>>(NetworkResult.Idle())
     var isFav by mutableStateOf(false)
+    val dataLocal = favouriteDao.getAll()
 
     fun setFinishOnboard(){
         viewModelScope.launch {
