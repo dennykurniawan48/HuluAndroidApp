@@ -12,4 +12,7 @@ class NetworkRepository @Inject constructor(private val client: HttpClient) {
     suspend fun getAllMovie(url: String): NetworkResult<ResponseMovie>{
         return AllServiceImpl(client).getAllMovie(url)
     }
+    suspend fun getSearch(query: String): NetworkResult<ResponseMovie>{
+        return AllServiceImpl(client).getSearch(query)
+    }
 }

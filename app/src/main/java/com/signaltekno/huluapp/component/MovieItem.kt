@@ -3,6 +3,7 @@ package com.signaltekno.huluapp.component
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,13 +18,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.signaltekno.huluapp.Constant
 import com.signaltekno.huluapp.model.DetailMovie
+import com.signaltekno.huluapp.navigation.Screen
 import com.signaltekno.huluapp.ui.theme.Text700
+import com.signaltekno.huluapp.viewmodel.SharedViewModel
+import kotlinx.serialization.json.Json
+import java.net.URL
+import java.net.URLEncoder
 
 @Composable
-fun MovieItem(item: DetailMovie) {
+fun MovieItem(item: DetailMovie, navHostController: NavHostController, sharedViewModel: SharedViewModel, setBottombar:(Boolean)->Unit) {
     val shimmerColors = listOf(
         Color.LightGray.copy(alpha = 0.6f),
         Color.LightGray.copy(alpha = 0.2f),
@@ -52,7 +59,13 @@ fun MovieItem(item: DetailMovie) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp),
+            .padding(top = 8.dp).clickable{
+                //val jsonElement = Json.encodeToJsonElement(DetailMovie.serializer(), item)
+               // setBottombar(false)
+                sharedViewModel.setDetail(item)
+                val route = Screen.DETAIL.route
+                navHostController.navigate(route)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         val imageSrc = item.poster_path ?: item.backdrop_path

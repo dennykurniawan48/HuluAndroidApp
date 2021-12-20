@@ -6,4 +6,5 @@ sealed class Screen(val route: String){
     object HOME: Screen("HOME")
     object SEARCH: Screen("SEARCH")
     object FAVOURITE: Screen("FAVOURITE")
+    object DETAIL: Screen("DETAIL")
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -45,6 +46,8 @@ fun HomeScreen(
     var firstLoad by rememberSaveable{ mutableStateOf(true)}
     val dataMovie by sharedViewModel.dataMovie.observeAsState()
     var selectedGenre by rememberSaveable{ mutableStateOf(0)}
+    val listState = rememberLazyListState()
+
     LaunchedEffect(key1 = true) {
         setBottomBar(true)
     }
@@ -85,9 +88,9 @@ fun HomeScreen(
             Log.d("Hello", dataMovie?.data?.results.toString())
             val items = dataMovie?.data?.results
             if(items != null) {
-                LazyColumn {
+                LazyColumn(state=listState) {
                     items(items) { item ->
-                        MovieItem(item = item)
+                        MovieItem(item = item, navController, sharedViewModel = sharedViewModel, setBottombar = setBottomBar)
                         Divider(color = Color.LightGray, thickness = 1.dp)
                     }
                 }
@@ -105,7 +108,7 @@ fun HomeScreen(
         }
 
         if (dataMovie is NetworkResult.Loading) {
-            repeat(15) {
+            repeat(7) {
                 AnimatedShimmer()
             }
         }
