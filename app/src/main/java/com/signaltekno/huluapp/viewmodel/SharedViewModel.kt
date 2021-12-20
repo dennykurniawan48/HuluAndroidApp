@@ -1,27 +1,28 @@
 package com.signaltekno.huluapp.viewmodel
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.signaltekno.huluapp.database.FavouriteDao
 import com.signaltekno.huluapp.model.DetailMovie
 import com.signaltekno.huluapp.model.NetworkResult
 import com.signaltekno.huluapp.model.ResponseMovie
 import com.signaltekno.huluapp.repository.DatastoreRepository
 import com.signaltekno.huluapp.repository.NetworkRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedViewModel @Inject constructor(private val datastoreRepository: DatastoreRepository, private val repository: NetworkRepository): ViewModel() {
+class SharedViewModel @Inject constructor(private val datastoreRepository: DatastoreRepository, private val repository: NetworkRepository, private val favouriteDao: FavouriteDao): ViewModel() {
     val onboard = datastoreRepository.flowBoard
     val dataMovie = MutableLiveData<NetworkResult<ResponseMovie>>(NetworkResult.Idle())
     val detail = mutableStateOf<DetailMovie?>(null)
     val dataSearch = MutableLiveData<NetworkResult<ResponseMovie>>(NetworkResult.Idle())
+    var isFav by mutableStateOf(false)
 
     fun setFinishOnboard(){
         viewModelScope.launch {
@@ -39,10 +40,23 @@ class SharedViewModel @Inject constructor(private val datastoreRepository: Datas
 
     fun setDetail(detailMovie: DetailMovie){
         detail.value = detailMovie
+        viewModelScope.launch {
+            isFav = favouriteDao.isFav(detailMovie.id)
+        }
     }
 
-    fun setSearchIdle(){
-        dataSearch.value = NetworkResult.Idle()
+    fun addFavourite(detailMovie: DetailMovie){
+        viewModelScope.launch {
+            favouriteDao.addFav(detailMovie)
+        }
+        isFav = true
+    }
+
+    fun deleteFavourite(detailMovie: DetailMovie){
+        viewModelScope.launch {
+            favouriteDao.deleteFav(detailMovie)
+        }
+        isFav = false
     }
 
     fun doSearch(query: String){

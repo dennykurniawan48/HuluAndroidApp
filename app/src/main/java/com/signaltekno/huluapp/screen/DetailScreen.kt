@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -42,6 +43,7 @@ fun DetailScreen(
 ) {
     var firstLoad by remember{ mutableStateOf(true)}
     val hasil by sharedViewModel.detail
+    val isFav = sharedViewModel.isFav
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
     )
@@ -75,7 +77,7 @@ fun DetailScreen(
             sheetPeekHeight = 80.dp,
             sheetContent = {
 //            Log.d("hasil-2", "K")
-                hasil?.let { BottomSheetContent(it) }
+                hasil?.let { BottomSheetContent(it, isFav = isFav, sharedViewModel = sharedViewModel) }
             },
             content = {
 //            Log.d("hasil-3", "Y")
@@ -155,7 +157,9 @@ fun BackgroundContent(
 fun BottomSheetContent(
     selectedMovie: DetailMovie,
     sheetBackgroundColor: Color = MaterialTheme.colors.OnBoardColor,
-    contentColor: Color = Text700
+    contentColor: Color = Text700,
+    isFav: Boolean,
+    sharedViewModel: SharedViewModel
 ) {
     Column(
         modifier = Modifier
@@ -176,6 +180,24 @@ fun BottomSheetContent(
                 fontSize = MaterialTheme.typography.h5.fontSize,
                 fontWeight = FontWeight.Bold
             )
+            Column(modifier=Modifier
+                .weight(2f), horizontalAlignment = Alignment.End){
+                IconButton(onClick = {
+                    if(isFav){
+                        sharedViewModel.deleteFavourite(selectedMovie)
+                    }else{
+                        sharedViewModel.addFavourite(selectedMovie)
+                    }
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_bookmark),
+                        contentDescription = "Bookmark",
+                        modifier = Modifier
+                            .size(40.dp), tint = if(!isFav) contentColor else Color.Red
+                    )
+                }
+            }
+
         }
 
         Text(
